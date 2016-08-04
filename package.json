@@ -1,6 +1,6 @@
 {
   "name": "react-redux-starter-kit",
-  "version": "3.0.0-alpha.2",
+  "version": "0.1.0",
   "description": "Get started with React, Redux, and React-Router!",
   "main": "index.js",
   "engines": {
@@ -20,7 +20,11 @@
     "deploy": "better-npm-run deploy",
     "deploy:dev": "better-npm-run deploy:dev",
     "deploy:prod": "better-npm-run deploy:prod",
-    "codecov": "cat coverage/*/lcov.info | codecov"
+    "codecov": "cat coverage/*/lcov.info | codecov",
+    "docker": "npm run deploy:prod && npm run docker:copy && npm run gobuild && npm run docker:build",
+    "docker:copy": "better-npm-run docker:copy",
+    "docker:build": "better-npm-run docker:build",
+    "gobuild": "better-npm-run gobuild"
   },
   "betterScripts": {
     "compile": {
@@ -66,6 +70,24 @@
       "command": "babel-node ./node_modules/karma/bin/karma start build/karma.conf",
       "env": {
         "NODE_ENV": "test",
+        "DEBUG": "app:*"
+      }
+    },
+    "docker:copy": {
+      "command": "cp ./docker/* ./dist",
+      "env": {
+        "DEBUG": "app:*"
+      }
+    },
+    "gobuild": {
+      "command": "cd dist && GOOS=linux GOARCH=amd64 go build -o counter",
+      "env": {
+        "DEBUG": "app:*"
+      }
+    },
+    "docker:build": {
+      "command": "docker build -t username/counter:v$npm_package_version dist",
+      "env": {
         "DEBUG": "app:*"
       }
     }
